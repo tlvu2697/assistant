@@ -1,0 +1,27 @@
+AllCops:
+  TargetRubyVersion: 2.4
+
+Layout/LineLength:
+  Max: 120
+
+Metrics/MethodLength:
+  Enabled: false
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  SafeAutoCorrect: true
+  Include:
+    - "lib/**/*"
+
+Style/StringLiterals:
+  Enabled: true
+  EnforcedStyle: single_quotes
+
+Style/StringLiteralsInInterpolation:
+  Enabled: true
+  EnforcedStyle: double_quotes
