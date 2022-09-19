@@ -1,0 +1,31 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'assistant'
+
+module Assistant
+  module CLI
+    extend Dry::CLI::Registry
+
+    class Version < Dry::CLI::Command
+      desc 'Print version'
+
+      def call(*)
+        puts Assistant::VERSION
+      end
+    end
+
+    register 'version', Version, aliases: ['v', '-v', '--version']
+
+    register 'linux', aliases: ['l'] do |prefix|
+      prefix.register 'clean', Assistant::Commands::Linux::Clean
+      prefix.register 'stress', Assistant::Commands::Linux::Stress
+    end
+
+    register 'eh' do |prefix|
+      prefix.register 'tick_checklist', Assistant::Commands::EH::TickChecklist
+    end
+  end
+end
+
+Dry::CLI.new(Assistant::CLI).call
