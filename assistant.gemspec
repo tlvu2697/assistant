@@ -32,7 +32,7 @@ Gem::Specification.new do |spec|
   # Uncomment to register a new dependency of your gem
   spec.add_runtime_dependency 'clipboard', '~> 1.3.6'
   spec.add_runtime_dependency 'dry-cli', '~> 0.6'
-  spec.add_runtime_dependency 'require_all', '~> 3.0.0'
+  spec.add_runtime_dependency 'os', '~> 1.1.4'
 
   spec.add_development_dependency 'byebug', '~> 11.1.3'
   spec.add_development_dependency 'rake', '~> 13.0'
