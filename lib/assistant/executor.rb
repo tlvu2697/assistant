@@ -2,10 +2,10 @@
 
 module Assistant
   class Executor
+    # ref: https://stackoverflow.com/a/20001569
     def self.sync(command)
-      system(command.content)
-
-      self
+      stdout, _, status = Open3.capture3(command.content)
+      status.success? && stdout.slice!(0..-(1 + $INPUT_RECORD_SEPARATOR.size))
     end
 
     def self.async(*commands)
