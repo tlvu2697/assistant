@@ -18,12 +18,22 @@ module Assistant
     register 'version', Version, aliases: ['v', '-v', '--version']
 
     register 'linux', aliases: ['l'] do |prefix|
-      prefix.register 'clean', Assistant::Commands::Linux::Clean
+      prefix.register 'clean',  Assistant::Commands::Linux::Clean
       prefix.register 'stress', Assistant::Commands::Linux::Stress
+      prefix.register 'update', Assistant::Commands::Linux::Update
     end
 
     register 'eh' do |prefix|
       prefix.register 'tick_checklist', Assistant::Commands::EH::TickChecklist
+    end
+
+    register 'apps' do |prefix|
+      prefix.register 'bat',        Assistant::Commands::Apps::Bat
+      prefix.register 'grpcurl',    Assistant::Commands::Apps::Grpcurl
+      prefix.register 'lazydocker', Assistant::Commands::Apps::Lazydocker
+      prefix.register 'lazygit',    Assistant::Commands::Apps::Lazygit
+      prefix.register 'omada',      Assistant::Commands::Apps::Omada
+      prefix.register 'overmind',   Assistant::Commands::Apps::Overmind
     end
   end
 end
