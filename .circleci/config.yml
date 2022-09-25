@@ -5,9 +5,6 @@ commands:
     description: "Setup Environment"
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - bundler-{{ checksum "Gemfile.lock" }}
       - run:
           name: Install Bundler
           command: |
@@ -19,11 +16,7 @@ commands:
       - run:
           name: Bundle
           command: |
-            bundle check || bundle install --jobs 5 --retry 3
-      - save_cache:
-          key: bundler-{{ checksum "Gemfile.lock" }}
-          paths:
-            - vendor/bundle
+            bundle install --jobs 5 --retry 3
 
 jobs:
   publish:
