@@ -1,0 +1,45 @@
+version: 2.1
+
+commands:
+  setup_environment:
+    description: "Setup Environment"
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - bundler-{{ checksum "Gemfile.lock" }}
+      - run:
+          name: Install Bundler
+          command: |
+            gem install bundler:2.3.7
+      - run:
+          name: Setup Bundler
+          command: |
+            bundle config set path "vendor/bundle"
+      - run:
+          name: Bundle
+          command: |
+            bundle check || bundle install --jobs 5 --retry 3
+      - save_cache:
+          key: bundler-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
+
+jobs:
+  publish:
+    docker:
+      - image: cimg/ruby:3.1.2
+    working_directory: ~/app
+    steps:
+      - setup_environment
+      - run: bundle exec ruby bin/publish.rb
+
+workflows:
+  build_and_deploy:
+    jobs:
+      - publish:
+          context: org-global
+          filters:
+            branches:
+              only:
+                - main
