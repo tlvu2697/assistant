@@ -39,17 +39,15 @@ module Assistant
           )
         end
 
-        def clean_snaps_command
+        def start_container
           Assistant::Command.new(
             <<~BASH
               docker run -d \
                 --name omada-controller \
                 --restart unless-stopped \
                 --net host \
-                -e MANAGE_HTTP_PORT=8088 \
+                -e MANAGE_HTTP_PORT=8000 \
                 -e MANAGE_HTTPS_PORT=8443 \
-                -e PORTAL_HTTP_PORT=8088 \
-                -e PORTAL_HTTPS_PORT=8843 \
                 -e SHOW_SERVER_LOGS=true \
                 -e SHOW_MONGODB_LOGS=false \
                 -e SSL_CERT_NAME="tls.crt" \

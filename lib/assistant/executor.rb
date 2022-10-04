@@ -15,6 +15,13 @@ module Assistant
       self
     end
 
+    def self.capture(command)
+      stdout, _, status = Open3.capture3(command.content)
+      status.success? && stdout.slice!(0..-(1 + $INPUT_RECORD_SEPARATOR.size))
+    rescue StandardError
+      nil
+    end
+
     def self.await
       Process.waitall
     end
