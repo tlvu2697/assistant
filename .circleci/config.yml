@@ -30,8 +30,12 @@ jobs:
 workflows:
   build_and_deploy:
     jobs:
+      - hold_publish:
+          type: approval
       - publish:
           context: org-global
+          requires:
+            - hold_publish
           filters:
             branches:
               only:

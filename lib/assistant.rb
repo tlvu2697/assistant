@@ -12,4 +12,5 @@ require 'assistant/commands'
 
 module Assistant
   class Error < StandardError; end
+  class NotFoundError < StandardError; end
 end
