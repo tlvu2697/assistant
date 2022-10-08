@@ -5,7 +5,7 @@ module Assistant
     attr_reader :content
 
     def initialize(content)
-      @content = content
+      @content = content&.strip
     end
   end
 end
