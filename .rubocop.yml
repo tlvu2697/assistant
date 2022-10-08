@@ -13,6 +13,9 @@ Style/ClassAndModuleChildren:
 Style/Documentation:
   Enabled: false
 
+Style/For:
+  Enabled: false
+
 Style/FrozenStringLiteralComment:
   SafeAutoCorrect: true
   Include:

@@ -34,7 +34,12 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'dry-cli', '~> 0.6'
   spec.add_runtime_dependency 'httparty', '~> 0.20.0'
   spec.add_runtime_dependency 'os', '~> 1.1.4'
-  spec.add_runtime_dependency 'tty-prompt', '~> 0.22'
+  spec.add_runtime_dependency 'pastel', '~> 0.8.0'
+  spec.add_runtime_dependency 'tty-command', '~> 0.10.1'
+  spec.add_runtime_dependency 'tty-config', '~> 0.5.1'
+  spec.add_runtime_dependency 'tty-logger', '~> 0.6.0'
+  spec.add_runtime_dependency 'tty-prompt', '~> 0.23.1'
+  spec.add_runtime_dependency 'tty-spinner', '~> 0.9.3'
 
   spec.add_development_dependency 'byebug', '~> 11.1.3'
   spec.add_development_dependency 'rake', '~> 13.0'

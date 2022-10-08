@@ -17,6 +17,10 @@ module Assistant
 
     register 'version', Version, aliases: ['v', '-v', '--version']
 
+    register 'circleci', aliases: ['ci'] do |circleci|
+      circleci.register 'approve', Assistant::Commands::CircleCI::Approve
+    end
+
     register 'linux', aliases: ['l'] do |linux|
       linux.register 'clean',  Assistant::Commands::Linux::Clean
       linux.register 'stress', Assistant::Commands::Linux::Stress
