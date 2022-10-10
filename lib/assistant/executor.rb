@@ -13,12 +13,8 @@ module Assistant
       Process.waitall
     end
 
-    # ref: https://stackoverflow.com/a/20001569
     def capture(command)
-      stdout, _, status = Open3.capture3(command.content)
-      status.success? && stdout.slice!(0..-(1 + $INPUT_RECORD_SEPARATOR.size))
-    rescue StandardError
-      nil
+      Assistant::QUIET_CMD.run(command.content)
     end
 
     private
