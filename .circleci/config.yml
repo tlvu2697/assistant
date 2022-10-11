@@ -32,6 +32,8 @@ workflows:
     jobs:
       - hold_publish:
           type: approval
+      - hold_test:
+          type: approval
       - publish:
           context: org-global
           requires:

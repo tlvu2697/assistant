@@ -21,7 +21,7 @@ module Assistant
           jobs = yield fetch_available_jobs_of_workflows(workflows: workflows)
 
           prompt_select_jobs(jobs).each do |selected_job|
-            yield approve_job(selected_job)
+            approve_job(selected_job)
           end
 
           Success()
@@ -156,7 +156,6 @@ module Assistant
         end
 
         def approve_job(job)
-          result_ = nil
           Assistant::SPINNER.update(title: "Approving job \"#{Assistant::PASTEL.green(job.name)}\"")
           Assistant::SPINNER.run do |spinner|
             begin
@@ -173,9 +172,7 @@ module Assistant
                 spinner.error(Assistant::Utils.format_spinner_error(result_.failure))
               end
             rescue StandardError => e
-              result_ = Failure(e.message)
-
-              spinner.error(Assistant::Utils.format_spinner_error(result_.failure))
+              spinner.error(Assistant::Utils.format_spinner_error(e.message))
             end
           end
         end

@@ -79,7 +79,7 @@ module Assistant
           "/workflow/#{workflow_id}/approve/#{job_approval_request_id}"
         )
         message = JSON.parse(response.body)['message']
-        response.success ? Success(message) : Failure(message)
+        response.success? ? Success(message) : Failure(message)
       end
 
       private
