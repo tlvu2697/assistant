@@ -124,20 +124,7 @@ module Assistant
             jobs_ += fetch_jobs(workflow: workflow).value_or(Assistant::CircleCI::JobRelation.none)
           end
 
-          Assistant::SPINNER.update(title: 'Filtering available jobs')
-          Assistant::SPINNER.run do |spinner|
-            jobs_ = jobs_.type_approval.status_on_hold
-
-            if jobs_.count.positive?
-              jobs_ = Success(jobs_)
-              spinner.success(Assistant::Utils.format_spinner_success(jobs_.value!.map(&:name).join(', ')))
-            else
-              jobs_ = Failure()
-              spinner.error(Assistant::Utils.format_spinner_error('0 available job'))
-            end
-          end
-
-          jobs_
+          jobs_.count.positive? ? Success(jobs_) : Failure('0 available job')
         end
 
         def fetch_jobs(workflow:)
