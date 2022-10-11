@@ -35,7 +35,8 @@ module Assistant
       end
 
       def +(other)
-        self.class.new(@jobs + other.jobs)
+        jobs_ = other.respond_to?(:jobs) ? @jobs + other.jobs : @jobs + other
+        self.class.new(jobs_)
       end
 
       def flatten!
@@ -56,26 +57,29 @@ module Assistant
     end
 
     class JobRepository < BaseRepository
+      include Dry::Monads[:result, :do]
+
       # https://circleci.com/docs/api/v2/index.html#operation/listWorkflowJobs
       # PATH PARAMETERS
       #   - workflow-id : (string) : The unique ID of the workflow
       def get_by_workflow(workflow_id:)
         response = self.class.get("/workflow/#{workflow_id}/job")
-        if response.success?
-          on_success(
-            response,
-            { 'workflow_id' => workflow_id }
-          )
-        else
-          JobRelation.none
-        end
+        response.success? ? on_success(response, { 'workflow_id' => workflow_id }) : on_fail
+      end
+
+      def get_available_by_workflow(workflow_id:)
+        jobs = yield get_by_workflow(workflow_id: workflow_id)
+
+        jobs = jobs.type_approval.status_on_hold
+        jobs.count.positive? ? Success(jobs) : on_fail
       end
 
       def approve(workflow_id:, job_approval_request_id:)
         response = self.class.post(
           "/workflow/#{workflow_id}/approve/#{job_approval_request_id}"
         )
-        JSON.parse(response.body)['message']
+        message = JSON.parse(response.body)['message']
+        response.success ? Success(message) : Failure(message)
       end
 
       private
@@ -83,13 +87,19 @@ module Assistant
       def on_success(response, options = {})
         jobs = JSON.parse(response.body)['items']
 
-        JobRelation.new(
-          jobs.map do |job|
-            Job.new(job.merge(options))
-          end
+        Success(
+          JobRelation.new(
+            jobs.map do |job|
+              Job.new(job.merge(options))
+            end
+          )
         )
       rescue StandardError
-        []
+        on_fail
+      end
+
+      def on_fail
+        Failure('0 available job')
       end
     end
   end

@@ -15,6 +15,10 @@ module Assistant
     class PipelineRelation
       include Enumerable
 
+      def self.none
+        new([])
+      end
+
       def initialize(pipelines)
         @pipelines = Array.new(pipelines)
       end
@@ -31,6 +35,8 @@ module Assistant
     end
 
     class PipelineRepository < BaseRepository
+      include Dry::Monads[:result, :do]
+
       # https://circleci.com/docs/api/v2/index.html#operation/listPipelinesForProject
       # PATH PARAMETERS
       #   - project-slug : (string) : Project slug in the form `vcs-slug/org-name/repo-name`
@@ -39,7 +45,14 @@ module Assistant
       #   - page-token : (string) : A token to retrieve the next page of results
       def get_by_project(project_slug:, query: {})
         response = self.class.get("/project/#{project_slug}/pipeline", query: query)
-        response.success? ? on_success(response) : []
+        response.success? ? on_success(response) : on_fail
+      end
+
+      def get_latest_by_project(project_slug:, query: {})
+        pipelines = yield get_by_project(project_slug: project_slug, query: query)
+
+        latest_pipeline = pipelines.latest
+        latest_pipeline.nil? ? on_fail : Success(latest_pipeline)
       end
 
       private
@@ -47,13 +60,19 @@ module Assistant
       def on_success(response)
         pipelines = JSON.parse(response.body)['items']
 
-        PipelineRelation.new(
-          pipelines.map do |pipeline|
-            Pipeline.new(pipeline)
-          end
+        Success(
+          PipelineRelation.new(
+            pipelines.map do |pipeline|
+              Pipeline.new(pipeline)
+            end
+          )
         )
       rescue StandardError
-        []
+        on_fail
+      end
+
+      def on_fail
+        Failure('0 available pipeline')
       end
     end
   end

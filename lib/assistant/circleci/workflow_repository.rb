@@ -16,6 +16,10 @@ module Assistant
     class WorkflowRelation
       include Enumerable
 
+      def self.none
+        new([])
+      end
+
       def initialize(workflows)
         @workflows = Array.new(workflows)
       end
@@ -28,6 +32,8 @@ module Assistant
     end
 
     class WorkflowRepository < BaseRepository
+      include Dry::Monads[:result]
+
       # https://circleci.com/docs/api/v2/index.html#operation/listWorkflowsByPipelineId
       # PATH PARAMETERS
       #   - pipeline-id : (string) : The unique ID of the pipeline
@@ -35,7 +41,7 @@ module Assistant
       #   - page-token : (string) : A token to retrieve the next page of results
       def get_by_pipeline(pipeline_id:, query: {})
         response = self.class.get("/pipeline/#{pipeline_id}/workflow", query: query)
-        response.success? ? on_success(response) : []
+        response.success? ? on_success(response) : on_fail
       end
 
       private
@@ -43,13 +49,19 @@ module Assistant
       def on_success(response)
         workflows = JSON.parse(response.body)['items']
 
-        WorkflowRelation.new(
-          workflows.map do |workflow|
-            Workflow.new(workflow)
-          end
+        Success(
+          WorkflowRelation.new(
+            workflows.map do |workflow|
+              Workflow.new(workflow)
+            end
+          )
         )
       rescue StandardError
-        []
+        on_fail
+      end
+
+      def on_fail
+        Failure('0 available workflow')
       end
     end
   end
