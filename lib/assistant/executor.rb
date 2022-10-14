@@ -18,11 +18,18 @@ module Assistant
       Assistant::QUIET_CMD.run(command.content)
     end
 
+    def safe_capture(command)
+      Assistant::QUIET_CMD.run(command.content)
+    rescue StandardError
+      TTY::Command::Result.new(nil, nil, nil)
+    end
+
     def with_spinner(title:, &block)
       result_ = nil
 
-      Assistant::SPINNER.update(title: title)
-      Assistant::SPINNER.run do |spinner|
+      spinner_ = Assistant.spinner
+      spinner_.update(title: title)
+      spinner_.run do |spinner|
         begin
           # https://dry-rb.org/gems/dry-monads/1.3/result/#code-either-code
           # Use either to generate for Success / Failure

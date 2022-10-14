@@ -10,6 +10,7 @@ require 'tty-config'
 require 'tty-logger'
 require 'pastel'
 require 'tty-command'
+require 'tty-platform'
 require 'tty-prompt'
 require 'tty-spinner'
 
@@ -29,19 +30,16 @@ module Assistant
   QUIET_CMD = TTY::Command.new(printer: :null)
   PROMPT = TTY::Prompt.new
   PASTEL = Pastel.new
-  SPINNER = TTY::Spinner.new('[:spinner] :title', format: :dots, success_mark: '+', error_mark: '-')
+  PLATFORM = TTY::Platform.new
 
   class << self
-    def with_spinner(title:, success: nil, error: nil, &block)
-      success_message = success ? "(#{success})" : ''
-      error_message = error ? "(#{error})" : ''
-      result = nil
-      SPINNER.update(title: title)
-      SPINNER.run do |spinner|
-        result = yield block
-        result ? spinner.success(success_message) : spinner.error(error_message)
-      end
-      result
+    def spinner
+      TTY::Spinner.new(
+        '[:spinner] :title',
+        format: :dots,
+        success_mark: '+',
+        error_mark: '-'
+      )
     end
   end
 end

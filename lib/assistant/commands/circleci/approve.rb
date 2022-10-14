@@ -7,7 +7,7 @@ module Assistant
         include Dry::Monads[:result]
         include Dry::Monads::Do.for(:call)
 
-        desc 'Approve CircleCI job'
+        desc 'Approve CircleCI jobs'
 
         CIRLCECI_TOKEN_KEY = 'circleci_token'
 
@@ -30,25 +30,25 @@ module Assistant
         private
 
         def fetch_project_slug
-          Assistant::Executor.instance.with_spinner(title: 'Getting project') do
+          Assistant::Executor.instance.with_spinner(title: 'Fetching project') do
             Success(
               Assistant::Executor.instance.capture(
                 Assistant::Command.new(<<~BASH)
                   git remote get-url origin
                 BASH
-              ).to_a.first.gsub(/git@github.com:/, 'gh/').gsub(/.git/, '')
+              ).first.gsub(/git@github.com:/, 'gh/').gsub(/.git/, '')
             )
           end
         end
 
         def fetch_branch
-          Assistant::Executor.instance.with_spinner(title: 'Getting branch') do
+          Assistant::Executor.instance.with_spinner(title: 'Fetching branch') do
             Success(
               Assistant::Executor.instance.capture(
                 Assistant::Command.new(<<~BASH)
                   git rev-parse --abbrev-ref HEAD
                 BASH
-              ).to_a.first
+              ).first
             )
           end
         end
