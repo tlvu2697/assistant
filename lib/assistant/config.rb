@@ -6,6 +6,7 @@ require 'json'
 module Assistant
   class Config
     include Singleton
+    include Dry::Monads[:result]
 
     extend Forwardable
     def_delegators :storage, :fetch, :set
@@ -35,19 +36,20 @@ module Assistant
     private
 
     def storage
-      @storage ||= Assistant.with_spinner(title: 'Loading configurations') do
+      @storage ||= Assistant::Executor.instance.with_spinner(title: 'Loading configurations') do
+        storage = TTY::Config.new
+        storage.filename = '.assistant'
+        storage.extname = '.yaml'
+        storage.append_path(Dir.home)
+
         begin
-          storage = TTY::Config.new
-          storage.filename = '.assistant'
-          storage.extname = '.yaml'
-          storage.append_path(Dir.home)
           storage.read
-          storage
         rescue TTY::Config::ReadError
           storage.write(create: true, force: true)
-          storage
         end
-      end
+
+        [Success(storage), 'done']
+      end.value!
     end
   end
 end
