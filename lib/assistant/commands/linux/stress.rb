@@ -7,7 +7,7 @@ module Assistant
         desc 'Stress test CPU and GPU'
 
         def call(**)
-          Assistant::Executor.instance.await do
+          Assistant::Executor.instance.await do |async|
             async [
               stress_cpu_command,
               stress_gpu_command

@@ -3,13 +3,14 @@
 module Assistant
   class Executor
     include Singleton
+    include Dry::Monads[:result]
 
     def sync(command)
       Assistant::CMD.run(command.content)
     end
 
     def await(&block)
-      instance_exec(&block) if block_given?
+      block&.call(method(:async))
       Process.waitall
     end
 
@@ -17,11 +18,36 @@ module Assistant
       Assistant::QUIET_CMD.run(command.content)
     end
 
+    def with_spinner(title:, &block)
+      result_ = nil
+
+      Assistant::SPINNER.update(title: title)
+      Assistant::SPINNER.run do |spinner|
+        begin
+          # https://dry-rb.org/gems/dry-monads/1.3/result/#code-either-code
+          # Use either to generate for Success / Failure
+          result_, message = block.call(spinner)
+
+          if result_.success?
+            spinner.success(Assistant::Utils.format_spinner_success(message || result_.value!))
+          else
+            spinner.error(Assistant::Utils.format_spinner_error(message || result_.failure))
+          end
+        rescue StandardError => e
+          result_ = Failure(e.message)
+
+          spinner.error(Assistant::Utils.format_spinner_error(e.message))
+        end
+      end
+
+      result_
+    end
+
     private
 
     def async(*commands)
       commands.each do |command|
-        fork { Assistant::CMD.run(command.content) }
+        fork { sync(command) }
       end
     end
 
