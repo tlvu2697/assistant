@@ -32,12 +32,13 @@ Gem::Specification.new do |spec|
   # Uncomment to register a new dependency of your gem
   spec.add_runtime_dependency 'clipboard', '~> 1.3.6'
   spec.add_runtime_dependency 'dry-cli', '~> 0.6'
-  spec.add_runtime_dependency 'dry-monads', '~> 1.3'
+  spec.add_runtime_dependency 'dry-monads', '~> 1.3.0'
   spec.add_runtime_dependency 'httparty', '~> 0.20.0'
   spec.add_runtime_dependency 'pastel', '~> 0.8.0'
   spec.add_runtime_dependency 'tty-command', '~> 0.10.1'
   spec.add_runtime_dependency 'tty-config', '~> 0.5.1'
   spec.add_runtime_dependency 'tty-logger', '~> 0.6.0'
+  spec.add_runtime_dependency 'tty-platform', '~> 0.3.0'
   spec.add_runtime_dependency 'tty-prompt', '~> 0.23.1'
   spec.add_runtime_dependency 'tty-spinner', '~> 0.9.0'
 

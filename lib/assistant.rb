@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-require 'dry/monads'
-require 'dry/monads/do'
+require 'dry/monads/all'
 require 'clipboard'
 require 'dry/cli'
 require 'English'
