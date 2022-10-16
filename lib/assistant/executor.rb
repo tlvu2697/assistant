@@ -40,10 +40,14 @@ module Assistant
           else
             spinner.error(Assistant::Utils.format_spinner_error(message || result_.failure))
           end
+        rescue Dry::Monads::Do::Halt
+          result_ = Failure('halt')
+
+          spinner.error(Assistant::Utils.format_spinner_error(result_.failure))
         rescue StandardError => e
           result_ = Failure(e.message)
 
-          spinner.error(Assistant::Utils.format_spinner_error(e.message))
+          spinner.error(Assistant::Utils.format_spinner_error(result_.failure))
         end
       end
 

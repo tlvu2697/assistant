@@ -9,69 +9,80 @@ module Assistant
         BIN_NAME = 'lazygit'
 
         def call(**)
-          current_version = yield fetch_current_version
-          latest_version = yield fetch_latest_version
-          metadata = yield build_metadata(latest_version)
+          Assistant::Executor.instance.with_spinner(title: 'lazygit') do
+            validate_existence!
 
-          Success()
+            init
+            download
+            extract
+            install
+            clean
+
+            Success("#{metadata.current_version} -> #{metadata.latest_version}")
+          end
         end
 
         private
 
-        def fetch_current_version
-          Assistant::Executor.instance.with_spinner(title: 'Fetching current version') do
-            current_version_ = Assistant::Executor.instance.safe_capture(
-              Assistant::Command.new('lazygitt --version')
-            ).first
+        def current_version
+          return @current_version if defined? @current_version
 
-            Success(VERSION_MATCHER.match(current_version_)&.[](:version) || 'none')
-          end
+          current_version_ = Assistant::Executor.instance.safe_capture(
+            Assistant::Command.new('lazygit --version')
+          ).first
+
+          @current_version = VERSION_MATCHER.match(current_version_)&.[](:version) || 'none'
         end
 
-        def fetch_latest_version
-          Assistant::Executor.instance.with_spinner(title: 'Fetching latest version') do
-            latest_version_ = HTTParty.get(
-              "#{BASE_URL}/releases/latest",
-              headers: { 'Accept' => 'application/json' }
-            )
+        def latest_version
+          return @latest_version if defined? @latest_version
 
-            Success(latest_version_['tag_name'].gsub('v', ''))
-          end
+          latest_version_ = HTTParty.get(
+            "#{BASE_URL}/releases/latest",
+            headers: { 'Accept' => 'application/json' }
+          )
+
+          @latest_version = latest_version_['tag_name'].gsub('v', '')
         end
 
-        def build_metadata(latest_version)
+        def metadata
+          return @metadata if defined? @metadata
+
+          tmp_dir = "#{GLOBAL_BIN_DIR}/.lazygit"
           filename = "lazygit_#{latest_version}_#{Assistant::PLATFORM.os.capitalize}_#{Assistant::PLATFORM.cpu}.tar.gz"
-          url = "#{BASE_URL}/releases/download/#{latest_version}/#{filename}"
+          url = "#{BASE_URL}/releases/download/v#{latest_version}/#{filename}"
 
-          Success({
-            'filename' => filename,
-            'filepath' => "#{TMP_DIR}/#{filename}",
-            'url' => url
-          })
+          @metadata = Metadata.new(
+            current_version: current_version,
+            latest_version: latest_version,
+            tmp_dir: tmp_dir,
+            filename: filename,
+            filepath: "#{tmp_dir}/#{filename}",
+            url: url
+          )
         end
 
-        def extract(metadata)
-          Assistant::Executor.instance.with_spinner(title: 'Extracting') do
-            current_version_ = Assistant::Executor.instance.safe_capture(
-              Assistant::Command.new(
-                "tar xzvf #{metadata["filepath"]} -C #{BIN_DIR} #{BIN_NAME} > /dev/null"
-              )
-            ).first
-
-            Success('done')
-          end
+        def extract
+          Assistant::Executor.instance.capture(
+            Assistant::Command.new(
+              "tar xzvf #{metadata.filepath} -C #{metadata.tmp_dir} #{BIN_NAME} > /dev/null"
+            )
+          )
         end
 
-        def install()
+        def install
+          command_string = if Assistant::PLATFORM.linux?
+                             "install -m 755 #{metadata.tmp_dir}/#{BIN_NAME} -t \"#{GLOBAL_BIN_DIR}\""
+                           elsif Assistant::PLATFORM.mac?
+                             "install -m 755 #{metadata.tmp_dir}/#{BIN_NAME} #{GLOBAL_BIN_DIR}"
+                           else
+                             raise Assistant::Error, 'Unable to detect system'
+                           end
 
-  curl -sL -o .tmp/lazygit.tar.gz $GITHUB_URL
-  tar xzvf ~/.tmp/lazygit.tar.gz -C ~/.tmp lazygit > /dev/null
-  install -Dm 755 tmp/lazygit -t "$DIR"
-  echo "[*] lazygit (${CURRENT_VERSION} -> ${GITHUB_LATEST_VERSION})"
-  rm -rf tmp
+          Assistant::Executor.instance.capture(
+            Assistant::Command.new(command_string)
+          )
         end
-
-        def clean
       end
     end
   end

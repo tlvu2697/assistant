@@ -9,6 +9,7 @@ require 'tty-config'
 require 'tty-logger'
 require 'pastel'
 require 'tty-command'
+require 'tty-file'
 require 'tty-platform'
 require 'tty-prompt'
 require 'tty-spinner'
@@ -17,14 +18,12 @@ require 'assistant/utils'
 require 'assistant/circleci'
 require 'assistant/command'
 require 'assistant/config'
+require 'assistant/errors'
 require 'assistant/executor'
 require 'assistant/version'
 require 'assistant/commands'
 
 module Assistant
-  class Error < StandardError; end
-  class NotFoundError < StandardError; end
-
   CMD = TTY::Command.new(printer: :pretty)
   QUIET_CMD = TTY::Command.new(printer: :null)
   PROMPT = TTY::Prompt.new

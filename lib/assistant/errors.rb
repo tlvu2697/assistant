@@ -8,4 +8,10 @@ module Assistant
   end
 
   class NotFoundError < StandardError; end
+
+  class ExistedError < StandardError
+    def initialize(message = nil)
+      super message || 'Skipped'
+    end
+  end
 end

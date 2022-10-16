@@ -3,31 +3,46 @@
 module Assistant
   module Commands
     module Apps
+      Metadata = Struct.new(
+        *%i[
+          current_version
+          latest_version
+          tmp_dir
+          filename
+          filepath
+          url
+        ],
+        keyword_init: true
+      )
+
       class BaseApp < Dry::CLI::Command
         include Dry::Monads[:result, :do]
 
-        BIN_DIR = "#{Dir.home}/.local/bin"
-        TMP_DIR = "#{Dir.home}/.tmp"
+        GLOBAL_BIN_DIR = "#{Dir.home}/.local/bin"
+        GLOBAL_TMP_DIR = "#{Dir.home}/.tmp"
 
         private
 
+        def metadata
+          raise NotImplementedError
+        end
+
         def init
-          TTY::File.create_dir(BIN_DIR)
-          TTY::File.create_dir(TMP_DIR)
+          TTY::File.create_dir(GLOBAL_BIN_DIR, verbose: false)
+          TTY::File.create_dir(GLOBAL_TMP_DIR, verbose: false)
+          TTY::File.create_dir(metadata.tmp_dir, verbose: false)
         end
 
-        def download(metadata)
-          Assistant::Executor.instance.with_spinner(title: 'Downloading') do
-            Assistant::Executor.instance.sync(
-              Assistant::Command.new("curl -sL -o #{metadata["filepath"]} #{metadata["url"]}")
-            )
-
-            Success('done')
-          end
+        def download
+          Assistant::Executor.instance.capture(
+            Assistant::Command.new("curl -sL -o #{metadata.filepath} #{metadata.url}")
+          )
         end
 
-        def clean(path)
-          TTY::File.remove_file(path)
+        def clean
+          Assistant::Executor.instance.capture(
+            Assistant::Command.new("rm -rf #{metadata.tmp_dir}")
+          )
         end
       end
     end
