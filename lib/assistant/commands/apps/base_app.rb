@@ -23,6 +23,12 @@ module Assistant
 
         private
 
+        def validate_existence!
+          return if metadata.current_version != metadata.latest_version
+
+          raise Assistant::ExistedError, "#{metadata.current_version} - latest"
+        end
+
         def metadata
           raise NotImplementedError
         end
