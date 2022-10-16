@@ -3,11 +3,12 @@
 module Assistant
   module CircleCI
     class Pipeline
-      attr_reader :id, :number, :created_at
+      attr_reader :id, :number, :revision, :created_at
 
       def initialize(data)
         @id = data['id']
         @number = data['number']
+        @revision = data.dig('vcs', 'revision')
         @created_at = data['created_at']
       end
     end

@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.description   = 'Write a longer description or delete this line.'
   spec.homepage      = 'https://gem.vutran.cyou'
   spec.license       = 'MIT'
-  spec.required_ruby_version = '>= 2.4.0'
+  spec.required_ruby_version = '>= 2.7.0'
 
   spec.metadata['allowed_push_host'] = "Set to 'https://mygemserver.com'"
 
@@ -32,11 +32,12 @@ Gem::Specification.new do |spec|
   # Uncomment to register a new dependency of your gem
   spec.add_runtime_dependency 'clipboard', '~> 1.3.6'
   spec.add_runtime_dependency 'dry-cli', '~> 0.6'
-  spec.add_runtime_dependency 'dry-monads', '~> 1.3.0'
+  spec.add_runtime_dependency 'dry-monads', '~> 1.3.5'
   spec.add_runtime_dependency 'httparty', '~> 0.20.0'
   spec.add_runtime_dependency 'pastel', '~> 0.8.0'
   spec.add_runtime_dependency 'tty-command', '~> 0.10.1'
   spec.add_runtime_dependency 'tty-config', '~> 0.5.1'
+  spec.add_runtime_dependency 'tty-file', '~> 0.10.0'
   spec.add_runtime_dependency 'tty-logger', '~> 0.6.0'
   spec.add_runtime_dependency 'tty-platform', '~> 0.3.0'
   spec.add_runtime_dependency 'tty-prompt', '~> 0.23.1'

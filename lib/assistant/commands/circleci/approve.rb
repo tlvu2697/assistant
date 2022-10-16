@@ -62,7 +62,7 @@ module Assistant
               query: { branch: @branch }
             )
             message = pipeline_.either(
-              ->(pipeline) { "##{pipeline.number}" },
+              ->(pipeline) { "##{pipeline.number} - $#{pipeline.revision[0, 8]}" },
               ->(error_message) { error_message }
             )
 
