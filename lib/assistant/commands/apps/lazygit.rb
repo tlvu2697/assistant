@@ -48,7 +48,7 @@ module Assistant
         def metadata
           return @metadata if defined? @metadata
 
-          tmp_dir = "#{GLOBAL_BIN_DIR}/.lazygit"
+          tmp_dir = "#{GLOBAL_TMP_DIR}/.lazygit"
           filename = "lazygit_#{latest_version}_#{Assistant::PLATFORM.os.capitalize}_#{Assistant::PLATFORM.cpu}.tar.gz"
           url = "#{BASE_URL}/releases/download/v#{latest_version}/#{filename}"
 
@@ -65,7 +65,7 @@ module Assistant
         def extract
           Assistant::Executor.instance.capture(
             Assistant::Command.new(
-              "tar xzvf #{metadata.filepath} -C #{metadata.tmp_dir} #{BIN_NAME} > /dev/null"
+              "tar xzf #{metadata.filepath} -C #{metadata.tmp_dir} #{BIN_NAME} > /dev/null"
             )
           )
         end

@@ -25,6 +25,7 @@ module Assistant
       linux.register 'clean',  Assistant::Commands::Linux::Clean
       linux.register 'stress', Assistant::Commands::Linux::Stress
       linux.register 'update', Assistant::Commands::Linux::Update
+      linux.register 'tweak', Assistant::Commands::Linux::Tweak
 
       linux.register 'setup dev', Assistant::Commands::Linux::Setup::Dev
     end
@@ -40,6 +41,7 @@ module Assistant
       prefix.register 'lazygit',    Assistant::Commands::Apps::Lazygit
       prefix.register 'omada',      Assistant::Commands::Apps::Omada
       prefix.register 'overmind',   Assistant::Commands::Apps::Overmind
+      prefix.register 'postman',    Assistant::Commands::Apps::Postman
     end
   end
 end
