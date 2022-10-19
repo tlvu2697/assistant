@@ -9,10 +9,8 @@ module Assistant
 
         desc 'Approve CircleCI jobs'
 
-        CIRLCECI_TOKEN_KEY = 'circleci_token'
-
         def call(**)
-          @circleci_token = Assistant::Config.instance.prompt_fetch(CIRLCECI_TOKEN_KEY)
+          @circleci_token = Assistant::Config.instance.prompt_fetch(Assistant::Config::CIRLCECI_TOKEN_KEY)
           @project_slug = yield fetch_project_slug
           @branch = yield fetch_branch
 

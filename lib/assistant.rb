@@ -14,6 +14,7 @@ require 'tty-platform'
 require 'tty-prompt'
 require 'tty-spinner'
 
+require 'assistant/tweaks'
 require 'assistant/utils'
 require 'assistant/circleci'
 require 'assistant/command'

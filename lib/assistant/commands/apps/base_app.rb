@@ -20,6 +20,15 @@ module Assistant
 
         GLOBAL_BIN_DIR = "#{Dir.home}/.local/bin"
         GLOBAL_TMP_DIR = "#{Dir.home}/.tmp"
+        SUDO_PASSWORD = 'sudo_password'
+
+        def request_sudo_permission
+          sudo_password = Assistant::Config.instance.prompt(SUDO_PASSWORD)
+
+          Assistant::Executor.instance.capture(
+            Assistant::Command.new("sudo -S -p '' echo '' << '#{sudo_password}'")
+          )
+        end
 
         private
 

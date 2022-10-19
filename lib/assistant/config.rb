@@ -8,6 +8,9 @@ module Assistant
     include Singleton
     include Dry::Monads[:result]
 
+    CIRLCECI_TOKEN_KEY = 'circleci_token'
+    SUDO_PASSWORD_KEY = 'sudo_password'
+
     extend Forwardable
     def_delegators :storage, :fetch, :set
 
@@ -18,14 +21,19 @@ module Assistant
         return value
       end
 
-      value = Assistant::PROMPT.mask(
+      value = prompt(args)
+      set!(key, value: value)
+      fetch(key)
+    end
+
+    def prompt(*args)
+      key = Array(args).join('.')
+
+      Assistant::PROMPT.mask(
         "Hi there, I need your \"#{Assistant::PASTEL.bold(key)}\" to continue:"
       ) do |q|
         q.required true
       end
-
-      set!(key, value: value)
-      fetch(key)
     end
 
     def set!(*args, **kwargs, &block)

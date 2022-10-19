@@ -5,6 +5,8 @@ module Assistant
     module Apps
       class Postman < BaseApp
         def call(**)
+          request_sudo_permission
+
           Assistant::Executor.instance.with_spinner(title: 'postman') do
             init
             # download
