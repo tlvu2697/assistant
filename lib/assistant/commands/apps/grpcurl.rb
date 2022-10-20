@@ -11,7 +11,7 @@ module Assistant
         end
 
         def version_matcher
-          @version_matcher ||= /grpcurl v(?<version>.*)/.freeze
+          @version_matcher ||= /grpcurl v(?<version>.+)/.freeze
         end
 
         def bin_name
