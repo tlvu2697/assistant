@@ -9,11 +9,11 @@ module Assistant
 
           Assistant::Executor.instance.with_spinner(title: 'postman') do
             init
-            # download
+            download
             extract
             install
             tweak
-            # clean
+            clean
 
             Success('done')
           end
