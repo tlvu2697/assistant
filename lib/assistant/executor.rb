@@ -30,25 +30,23 @@ module Assistant
       spinner_ = Assistant.spinner
       spinner_.update(title: title)
       spinner_.run do |spinner|
-        begin
-          # https://dry-rb.org/gems/dry-monads/1.3/result/#code-either-code
-          # Use either to generate for Success / Failure
-          result_, message = block.call(spinner)
+        # https://dry-rb.org/gems/dry-monads/1.3/result/#code-either-code
+        # Use either to generate for Success / Failure
+        result_, message = block.call(spinner)
 
-          if result_.success?
-            spinner.success(Assistant::Utils.format_spinner_success(message || result_.value!))
-          else
-            spinner.error(Assistant::Utils.format_spinner_error(message || result_.failure))
-          end
-        rescue Dry::Monads::Do::Halt
-          result_ = Failure('halt')
-
-          spinner.error(Assistant::Utils.format_spinner_error(result_.failure))
-        rescue StandardError => e
-          result_ = Failure(e.message)
-
-          spinner.error(Assistant::Utils.format_spinner_error(result_.failure))
+        if result_.success?
+          spinner.success(Assistant::Utils.format_spinner_success(message || result_.value!))
+        else
+          spinner.error(Assistant::Utils.format_spinner_error(message || result_.failure))
         end
+      rescue Dry::Monads::Do::Halt
+        result_ = Failure('halt')
+
+        spinner.error(Assistant::Utils.format_spinner_error(result_.failure))
+      rescue StandardError => e
+        result_ = Failure(e.message)
+
+        spinner.error(Assistant::Utils.format_spinner_error(result_.failure))
       end
 
       result_
