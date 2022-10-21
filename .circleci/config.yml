@@ -26,6 +26,11 @@ jobs:
     steps:
       - setup_environment
       - run: ruby bin/publish.rb
+  failure:
+    docker:
+      - image: cimg/ruby:3.1.2
+    steps:
+      - run: exit 1
 
 workflows:
   build_and_deploy:
@@ -42,3 +47,6 @@ workflows:
             branches:
               only:
                 - main
+  test_workflow:
+    jobs:
+      - failure

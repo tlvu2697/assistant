@@ -67,7 +67,7 @@ module Assistant
         response.success? ? on_success(response, { 'workflow_id' => workflow_id }) : on_fail
       end
 
-      def get_available_by_workflow(workflow_id:)
+      def get_on_hold_by_workflow(workflow_id:)
         jobs = yield get_by_workflow(workflow_id: workflow_id)
 
         jobs = jobs.type_approval.status_on_hold
@@ -99,7 +99,7 @@ module Assistant
       end
 
       def on_fail
-        Failure('0 available job')
+        Failure('0 job')
       end
     end
   end

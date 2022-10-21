@@ -3,10 +3,7 @@
 module Assistant
   module Commands
     module CircleCI
-      class Approve < Dry::CLI::Command
-        include Dry::Monads[:result]
-        include Dry::Monads::Do.for(:call)
-
+      class Approve < Base
         desc 'Approve CircleCI jobs'
 
         def call(**)
@@ -16,7 +13,7 @@ module Assistant
 
           pipeline = yield fetch_latest_pipeline
           workflows = yield fetch_workflows(pipeline_id: pipeline.id)
-          jobs = yield fetch_available_jobs_of_workflows(workflows: workflows)
+          jobs = yield fetch_on_hold_jobs_of_workflows(workflows: workflows)
 
           prompt_select_jobs(jobs).each do |selected_job|
             approve_job(selected_job)
@@ -26,30 +23,6 @@ module Assistant
         end
 
         private
-
-        def fetch_project_slug
-          Assistant::Executor.instance.with_spinner(title: 'Fetching project') do
-            Success(
-              Assistant::Executor.instance.capture(
-                Assistant::Command.new(<<~BASH)
-                  git remote get-url origin
-                BASH
-              ).first.gsub(/git@github.com:/, 'gh/').gsub(/.git/, '')
-            )
-          end
-        end
-
-        def fetch_branch
-          Assistant::Executor.instance.with_spinner(title: 'Fetching branch') do
-            Success(
-              Assistant::Executor.instance.capture(
-                Assistant::Command.new(<<~BASH)
-                  git rev-parse --abbrev-ref HEAD
-                BASH
-              ).first
-            )
-          end
-        end
 
         def fetch_latest_pipeline
           Assistant::Executor.instance.with_spinner(title: 'Fetching latest pipeline') do
@@ -84,14 +57,14 @@ module Assistant
           end
         end
 
-        def fetch_available_jobs_of_workflows(workflows:)
+        def fetch_on_hold_jobs_of_workflows(workflows:)
           jobs_ = Assistant::CircleCI::JobRelation.none
 
           workflows.each do |workflow|
             jobs_ += fetch_jobs(workflow: workflow).value_or(Assistant::CircleCI::JobRelation.none)
           end
 
-          jobs_.count.positive? ? Success(jobs_) : Failure('0 available job')
+          jobs_.count.positive? ? Success(jobs_) : Failure('0 job')
         end
 
         def fetch_jobs(workflow:)
@@ -100,7 +73,7 @@ module Assistant
           ) do
             jobs_ = Assistant::CircleCI::JobRepository.new(
               circleci_token: @circleci_token
-            ).get_available_by_workflow(
+            ).get_on_hold_by_workflow(
               workflow_id: workflow.id
             )
             message = jobs_.either(

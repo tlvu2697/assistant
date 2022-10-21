@@ -29,10 +29,14 @@ module Assistant
           yield workflow
         end
       end
+
+      def status_failing
+        self.class.new(@workflows.filter { |workflow| workflow.status == 'failing' })
+      end
     end
 
     class WorkflowRepository < BaseRepository
-      include Dry::Monads[:result]
+      include Dry::Monads[:result, :do]
 
       # https://circleci.com/docs/api/v2/index.html#operation/listWorkflowsByPipelineId
       # PATH PARAMETERS
@@ -42,6 +46,26 @@ module Assistant
       def get_by_pipeline(pipeline_id:, query: {})
         response = self.class.get("/pipeline/#{pipeline_id}/workflow", query: query)
         response.success? ? on_success(response) : on_fail
+      end
+
+      def get_failing_by_pipeline(pipeline_id:, query: {})
+        workflows = yield get_by_pipeline(pipeline_id: pipeline_id, query: query)
+
+        workflows = workflows.status_failing
+        workflows.count.positive? ? Success(workflows) : on_fail
+      end
+
+      def rerun(workflow_id:)
+        response = self.class.post(
+          "/workflow/#{workflow_id}/rerun",
+          body: {
+            enable_ssh: false,
+            from_failed: true,
+            jobs: [],
+            sparse_tree: false
+          }.to_json
+        )
+        response.success? ? Success() : Failure(message)
       end
 
       private
@@ -61,7 +85,7 @@ module Assistant
       end
 
       def on_fail
-        Failure('0 available workflow')
+        Failure('0 workflow')
       end
     end
   end
