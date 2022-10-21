@@ -3,12 +3,13 @@
 module Assistant
   module CircleCI
     class Workflow
-      attr_reader :id, :pipeline_id, :name, :created_at
+      attr_reader :id, :pipeline_id, :name, :status, :created_at
 
       def initialize(data)
         @id = data['id']
         @pipeline_id = data['pipeline_id']
         @name = data['name']
+        @status = data['status']
         @created_at = data['created_at']
       end
     end
@@ -31,7 +32,7 @@ module Assistant
       end
 
       def status_failing
-        self.class.new(@workflows.filter { |workflow| workflow.status == 'failing' })
+        self.class.new(@workflows.filter { |w| w.status == 'failing' || w.status == 'failed' })
       end
     end
 
@@ -51,6 +52,7 @@ module Assistant
       def get_failing_by_pipeline(pipeline_id:, query: {})
         workflows = yield get_by_pipeline(pipeline_id: pipeline_id, query: query)
 
+
         workflows = workflows.status_failing
         workflows.count.positive? ? Success(workflows) : on_fail
       end
@@ -65,7 +67,8 @@ module Assistant
             sparse_tree: false
           }.to_json
         )
-        response.success? ? Success() : Failure(message)
+
+        response.success? ? Success(response.message) : Failure(response.message)
       end
 
       private

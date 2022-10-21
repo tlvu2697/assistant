@@ -3,7 +3,7 @@
 module Assistant
   module Commands
     module CircleCI
-      class Approve < Base
+      class Rerun < Base
         desc 'Rerun CircleCI workflows'
 
         def call(**)

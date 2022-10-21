@@ -19,6 +19,7 @@ module Assistant
 
     register 'circleci', aliases: ['ci'] do |circleci|
       circleci.register 'approve', Assistant::Commands::CircleCI::Approve
+      circleci.register 'rerun', Assistant::Commands::CircleCI::Rerun
     end
 
     register 'linux', aliases: ['l'] do |linux|
