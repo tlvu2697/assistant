@@ -7,6 +7,8 @@ module Assistant
         desc 'Rerun CircleCI workflows'
 
         def call(**)
+          circleci_token
+
           @project_slug = yield fetch_project_slug
           @branch = yield fetch_branch
 

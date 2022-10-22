@@ -14,23 +14,26 @@ module Assistant
     extend Forwardable
     def_delegators :storage, :fetch, :set
 
-    def prompt_fetch(*args)
+    def prompt_fetch(*args, **kwargs)
       key = Array(args).join('.')
 
       if (value = fetch(key))
         return value
       end
 
-      value = prompt(args)
+      value = prompt(*args, **kwargs)
       set!(key, value: value)
       fetch(key)
     end
 
-    def prompt(*args)
+    def prompt(*args, **kwargs)
       key = Array(args).join('.')
 
+      with_key = Assistant::PASTEL.bold(key)
+      with_hint = kwargs[:hint].nil? ? ':' : " (#{Assistant::PASTEL.bright_blue(kwargs[:hint])}):"
+
       Assistant::PROMPT.mask(
-        "Hi there, I need your \"#{Assistant::PASTEL.bold(key)}\" to continue:"
+        "Hi there, I need your \"#{with_key}\" to continue#{with_hint}"
       ) do |q|
         q.required true
       end

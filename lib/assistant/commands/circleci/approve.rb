@@ -7,6 +7,8 @@ module Assistant
         desc 'Approve CircleCI jobs'
 
         def call(**)
+          circleci_token
+
           @project_slug = yield fetch_project_slug
           @branch = yield fetch_branch
 

@@ -10,7 +10,8 @@ module Assistant
 
         def circleci_token
           @circleci_token ||= Assistant::Config.instance.prompt_fetch(
-            Assistant::Config::CIRLCECI_TOKEN_KEY
+            Assistant::Config::CIRLCECI_TOKEN_KEY,
+            hint: 'https://app.circleci.com/settings/user/tokens'
           )
         end
 

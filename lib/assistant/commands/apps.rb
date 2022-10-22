@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'apps/base_app'
+require_relative 'apps/base'
 require_relative 'apps/bat'
 require_relative 'apps/grpcurl'
 require_relative 'apps/lazydocker'
