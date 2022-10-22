@@ -3,7 +3,7 @@
 module Assistant
   module Commands
     module Linux
-      class Tweak < Dry::CLI::Command
+      class Tweak < Base
         include Dry::Monads[:result]
 
         desc 'Linux tweaks that make your life better'

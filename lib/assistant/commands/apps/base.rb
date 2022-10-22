@@ -15,7 +15,7 @@ module Assistant
         keyword_init: true
       )
 
-      class BaseApp < Dry::CLI::Command
+      class Base < Dry::CLI::Command
         include Dry::Monads[:result, :do]
 
         GLOBAL_BIN_DIR = "#{Dir.home}/.local/bin"

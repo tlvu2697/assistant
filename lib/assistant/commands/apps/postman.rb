@@ -3,7 +3,7 @@
 module Assistant
   module Commands
     module Apps
-      class Postman < BaseApp
+      class Postman < Base
         def call(**)
           Assistant::Utils.request_sudo_permission!
 

@@ -3,7 +3,7 @@
 module Assistant
   module Commands
     module Apps
-      class Lazygit < BaseApp
+      class Lazygit < Base
         private
 
         def base_url

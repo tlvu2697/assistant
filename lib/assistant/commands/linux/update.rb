@@ -3,7 +3,7 @@
 module Assistant
   module Commands
     module Linux
-      class Update < Dry::CLI::Command
+      class Update < Base
         include Dry::Monads[:result]
 
         desc 'Update applications'

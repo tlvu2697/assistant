@@ -3,7 +3,7 @@
 module Assistant
   module Commands
     module Apps
-      class Overmind < BaseApp
+      class Overmind < Base
       end
     end
   end

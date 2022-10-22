@@ -8,6 +8,30 @@ module Assistant
 
         private
 
+        def circleci_token
+          @circleci_token ||= Assistant::Config.instance.prompt_fetch(
+            Assistant::Config::CIRLCECI_TOKEN_KEY
+          )
+        end
+
+        def pipeline_repository
+          @pipeline_repository ||= Assistant::CircleCI::PipelineRepository.new(
+            circleci_token: circleci_token
+          )
+        end
+
+        def workflow_repository
+          @workflow_repository ||= Assistant::CircleCI::WorkflowRepository.new(
+            circleci_token: circleci_token
+          )
+        end
+
+        def job_repository
+          @job_repository ||= Assistant::CircleCI::JobRepository.new(
+            circleci_token: circleci_token
+          )
+        end
+
         def fetch_project_slug
           Assistant::Executor.instance.with_spinner(title: 'Fetching project') do
             Success(
@@ -31,7 +55,6 @@ module Assistant
             )
           end
         end
-
       end
     end
   end

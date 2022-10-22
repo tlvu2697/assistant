@@ -3,7 +3,7 @@
 module Assistant
   module Commands
     module Apps
-      class Bat < BaseApp
+      class Bat < Base
         private
 
         VERSION_MATCHER = /bat (?<version>.*) \(.*\)/.freeze

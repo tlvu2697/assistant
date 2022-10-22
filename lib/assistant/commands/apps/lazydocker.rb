@@ -3,7 +3,7 @@
 module Assistant
   module Commands
     module Apps
-      class Lazydocker < BaseApp
+      class Lazydocker < Base
         private
 
         def base_url

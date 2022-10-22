@@ -3,7 +3,7 @@
 module Assistant
   module Commands
     module Apps
-      class Grpcurl < BaseApp
+      class Grpcurl < Base
         private
 
         def base_url

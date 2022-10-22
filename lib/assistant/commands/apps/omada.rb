@@ -3,7 +3,7 @@
 module Assistant
   module Commands
     module Apps
-      class Omada < Dry::CLI::Command
+      class Omada < Base
         desc 'Clean residual configs'
 
         def call(**)
