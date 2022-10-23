@@ -40,7 +40,7 @@ module Assistant
           return @metadata if defined? @metadata
 
           tmp_dir = "#{GLOBAL_TMP_DIR}/.#{bin_name}"
-          filename = "#{bin_name}_#{latest_version}_#{os.capitalize}_#{cpu}.tar.gz"
+          filename = "#{bin_name}-v#{latest_version}-#{os}-#{cpu}.gz"
           url = "#{base_url}/releases/download/v#{latest_version}/#{filename}"
 
           @metadata = Metadata.new(
@@ -50,6 +50,14 @@ module Assistant
             filename: filename,
             filepath: "#{tmp_dir}/#{filename}",
             url: url
+          )
+        end
+
+        def extract
+          Assistant::Executor.instance.capture(
+            Assistant::Command.new(
+              "gunzip -c #{metadata.filepath} > #{metadata.tmp_dir}/#{bin_name}"
+            )
           )
         end
       end
