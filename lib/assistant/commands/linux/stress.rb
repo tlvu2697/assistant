@@ -3,7 +3,7 @@
 module Assistant
   module Commands
     module Linux
-      class Stress < Dry::CLI::Command
+      class Stress < Base
         desc 'Stress test CPU and GPU'
 
         def call(**)

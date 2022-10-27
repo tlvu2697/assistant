@@ -7,7 +7,8 @@ module Assistant
         desc 'Approve CircleCI jobs'
 
         def call(**)
-          @circleci_token = Assistant::Config.instance.prompt_fetch(Assistant::Config::CIRLCECI_TOKEN_KEY)
+          circleci_token
+
           @project_slug = yield fetch_project_slug
           @branch = yield fetch_branch
 
@@ -26,9 +27,7 @@ module Assistant
 
         def fetch_latest_pipeline
           Assistant::Executor.instance.with_spinner(title: 'Fetching latest pipeline') do
-            pipeline_ = Assistant::CircleCI::PipelineRepository.new(
-              circleci_token: @circleci_token
-            ).get_latest_by_project(
+            pipeline_ = pipeline_repository.get_latest_by_project(
               project_slug: @project_slug,
               query: { branch: @branch }
             )
@@ -43,9 +42,7 @@ module Assistant
 
         def fetch_workflows(pipeline_id:)
           Assistant::Executor.instance.with_spinner(title: 'Fetching workflows') do
-            workflows_ = Assistant::CircleCI::WorkflowRepository.new(
-              circleci_token: @circleci_token
-            ).get_by_pipeline(
+            workflows_ = workflow_repository.get_by_pipeline(
               pipeline_id: pipeline_id
             )
             message = workflows_.either(
@@ -71,9 +68,7 @@ module Assistant
           Assistant::Executor.instance.with_spinner(
             title: "Fetching jobs of workflow \"#{Assistant::PASTEL.green(workflow.name)}\""
           ) do
-            jobs_ = Assistant::CircleCI::JobRepository.new(
-              circleci_token: @circleci_token
-            ).get_on_hold_by_workflow(
+            jobs_ = job_repository.get_on_hold_by_workflow(
               workflow_id: workflow.id
             )
             message = jobs_.either(
@@ -94,9 +89,7 @@ module Assistant
           Assistant::Executor.instance.with_spinner(
             title: "Approving job \"#{Assistant::PASTEL.green(job.name)}\""
           ) do
-            Assistant::CircleCI::JobRepository.new(
-              circleci_token: @circleci_token
-            ).approve(
+            job_repository.approve(
               workflow_id: job.workflow_id,
               job_approval_request_id: job.approval_request_id
             )

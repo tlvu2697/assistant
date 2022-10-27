@@ -7,12 +7,12 @@ module Assistant
         desc 'Rerun CircleCI workflows'
 
         def call(**)
-          @circleci_token = Assistant::Config.instance.prompt_fetch(Assistant::Config::CIRLCECI_TOKEN_KEY)
+          circleci_token
+
           @project_slug = yield fetch_project_slug
           @branch = yield fetch_branch
 
           pipeline = yield fetch_latest_pipeline
-
           workflows = yield fetch_failing_workflows(pipeline_id: pipeline.id)
 
           prompt_select_workflows(workflows).each do |selected_workflow|
@@ -26,9 +26,7 @@ module Assistant
 
         def fetch_latest_pipeline
           Assistant::Executor.instance.with_spinner(title: 'Fetching latest pipeline') do
-            pipeline_ = Assistant::CircleCI::PipelineRepository.new(
-              circleci_token: @circleci_token
-            ).get_latest_by_project(
+            pipeline_ = pipeline_repository.get_latest_by_project(
               project_slug: @project_slug,
               query: { branch: @branch }
             )
@@ -66,12 +64,6 @@ module Assistant
           ) do
             workflow_repository.rerun(workflow_id: workflow.id)
           end
-        end
-
-        def workflow_repository
-          @workflow_repository ||= Assistant::CircleCI::WorkflowRepository.new(
-            circleci_token: @circleci_token
-          )
         end
       end
     end

@@ -3,12 +3,14 @@
 module Assistant
   module Commands
     module Linux
-      class Clean < Dry::CLI::Command
+      class Clean < Base
         desc 'Clean residual configs'
 
         def call(**)
-          Assistant::Executor.sync(clean_apt_packages_command)
-          Assistant::Executor.sync(clean_snaps_command)
+          Assistant::Utils.request_sudo_permission!
+
+          Assistant::Executor.instance.sync(clean_apt_packages_command)
+          Assistant::Executor.instance.sync(clean_snaps_command)
         end
 
         private
