@@ -55,7 +55,13 @@ module Assistant
 
         def prompt_select_workflows(workflows)
           indexed_workflows = workflows.each_with_object({}) { |workflow, hash| hash[workflow.name] = workflow }
-          Assistant::PROMPT.multi_select('Select workflow to rerun', indexed_workflows, cycle: true, min: 1)
+          Assistant::PROMPT.multi_select(
+            'Select workflow to rerun',
+            indexed_workflows,
+            show_help: :always,
+            cycle: true,
+            min: 1
+          )
         end
 
         def rerun_workflow(workflow)
