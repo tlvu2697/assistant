@@ -79,7 +79,7 @@ module Assistant
 
         def download
           Assistant::Executor.instance.capture(
-            Assistant::Command.new("curl -sL -o #{metadata.filepath} #{metadata.url}")
+            Assistant::Models::Command.new("curl -sL -o #{metadata.filepath} #{metadata.url}")
           )
         end
 
@@ -104,7 +104,7 @@ module Assistant
 
         def extract
           Assistant::Executor.instance.capture(
-            Assistant::Command.new(
+            Assistant::Models::Command.new(
               "tar xzf #{metadata.filepath} -C #{metadata.tmp_dir} #{bin_name} > /dev/null"
             )
           )
@@ -120,13 +120,13 @@ module Assistant
                            end
 
           Assistant::Executor.instance.capture(
-            Assistant::Command.new(command_string)
+            Assistant::Models::Command.new(command_string)
           )
         end
 
         def clean
           Assistant::Executor.instance.capture(
-            Assistant::Command.new("rm -rf #{metadata.tmp_dir}")
+            Assistant::Models::Command.new("rm -rf #{metadata.tmp_dir}")
           )
         end
       end

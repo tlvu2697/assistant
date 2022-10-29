@@ -4,6 +4,9 @@ AllCops:
 Layout/LineLength:
   Max: 120
 
+Lint/MissingSuper:
+  Enabled: false
+
 Metrics/AbcSize:
   Enabled: false
 

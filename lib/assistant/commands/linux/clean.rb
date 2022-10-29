@@ -16,7 +16,7 @@ module Assistant
         private
 
         def clean_apt_packages_command
-          Assistant::Command.new(
+          Assistant::Models::Command.new(
             <<~BASH
               sudo apt --purge autoremove
             BASH
@@ -24,7 +24,7 @@ module Assistant
         end
 
         def clean_snaps_command
-          Assistant::Command.new(
+          Assistant::Models::Command.new(
             <<~BASH
               set -eu
 

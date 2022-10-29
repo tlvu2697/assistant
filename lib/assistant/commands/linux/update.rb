@@ -23,7 +23,7 @@ module Assistant
         def update_asdf
           Assistant::Executor.instance.with_spinner(title: 'asdf') do
             Assistant::Executor.instance.safe_capture(
-              Assistant::Command.new(<<~BASH)
+              Assistant::Models::Command.new(<<~BASH)
                 asdf update
                 asdf reshim
                 asdf plugin update --all
@@ -37,7 +37,7 @@ module Assistant
         def update_omz
           Assistant::Executor.instance.with_spinner(title: 'omz') do
             Assistant::Executor.instance.safe_capture(
-              Assistant::Command.new('omz update')
+              Assistant::Models::Command.new('omz update')
             )
 
             Success('done')
@@ -49,7 +49,7 @@ module Assistant
 
           Assistant::Executor.instance.with_spinner(title: 'snaps') do
             Assistant::Executor.instance.safe_capture(
-              Assistant::Command.new(<<~BASH)
+              Assistant::Models::Command.new(<<~BASH)
                 snap-store --quit
                 sudo snap refresh
               BASH

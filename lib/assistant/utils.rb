@@ -22,7 +22,7 @@ module Assistant
                          end
 
         Assistant::Executor.instance.capture(
-          Assistant::Command.new(command_string)
+          Assistant::Models::Command.new(command_string)
         )
       end
     end

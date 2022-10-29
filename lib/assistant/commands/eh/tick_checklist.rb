@@ -11,7 +11,7 @@ module Assistant
           Clipboard.copy(tick(strip_spaces(content)))
 
           Assistant::Executor.sync(
-            Assistant::Command.new(
+            Assistant::Models::Command.new(
               <<~BASH
                 notify-send 'Description updated'
               BASH

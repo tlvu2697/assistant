@@ -14,14 +14,14 @@ module Assistant
           def call(**); end
 
           def setup_gitignore_global
-            Assistant::Command.new(<<~BASH)
+            Assistant::Models::Command.new(<<~BASH)
               echo "[*] Setting up gitignore_global..."
               git config --global core.excludesfile ~/.gitignore_global
             BASH
           end
 
           def install_dev_tools
-            Assistant::Command.new(<<~BASH)
+            Assistant::Models::Command.new(<<~BASH)
               echo "[*] Installing alacritty, gh, neovim..."
               sudo add-apt-repository -y ppa:aslatter/ppa
               sudo apt update
@@ -32,7 +32,7 @@ module Assistant
           end
 
           def install_asdf(nodejs_version, python3_version, ruby_version)
-            Assistant::Command.new(<<~BASH)
+            Assistant::Models::Command.new(<<~BASH)
               echo "[*] Installing ASDF..."
               git clone https://github.com/asdf-vm/asdf.git ~/.asdf
               asdf plugin-add nodejs

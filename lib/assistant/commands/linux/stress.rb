@@ -18,7 +18,7 @@ module Assistant
         private
 
         def stress_cpu_command
-          Assistant::Command.new(
+          Assistant::Models::Command.new(
             <<~BASH
               stress --cpu 16 --timeout 300
             BASH
@@ -26,7 +26,7 @@ module Assistant
         end
 
         def stress_gpu_command
-          Assistant::Command.new(
+          Assistant::Models::Command.new(
             <<~BASH
               hashcat -b
             BASH

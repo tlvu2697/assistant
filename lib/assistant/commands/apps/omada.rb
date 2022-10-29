@@ -16,7 +16,7 @@ module Assistant
         private
 
         def stop_container
-          Assistant::Command.new(
+          Assistant::Models::Command.new(
             <<~BASH
               docker container stop omada-controller
             BASH
@@ -24,7 +24,7 @@ module Assistant
         end
 
         def remove_container
-          Assistant::Command.new(
+          Assistant::Models::Command.new(
             <<~BASH
               docker rm omada-controller
             BASH
@@ -32,7 +32,7 @@ module Assistant
         end
 
         def remove_image
-          Assistant::Command.new(
+          Assistant::Models::Command.new(
             <<~BASH
               docker rmi mbentley/omada-controller:latest
             BASH
@@ -40,7 +40,7 @@ module Assistant
         end
 
         def start_container
-          Assistant::Command.new(
+          Assistant::Models::Command.new(
             <<~BASH
               docker run -d \
                 --name omada-controller \

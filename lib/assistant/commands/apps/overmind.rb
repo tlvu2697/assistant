@@ -44,7 +44,7 @@ module Assistant
           url = "#{base_url}/releases/download/v#{latest_version}/#{filename}"
 
           @metadata = Metadata.new(
-            current_version: current_version(Assistant::Command.new('overmind --version')),
+            current_version: current_version(Assistant::Models::Command.new('overmind --version')),
             latest_version: latest_version,
             tmp_dir: tmp_dir,
             filename: filename,
@@ -55,7 +55,7 @@ module Assistant
 
         def extract
           Assistant::Executor.instance.capture(
-            Assistant::Command.new(
+            Assistant::Models::Command.new(
               "gunzip -c #{metadata.filepath} > #{metadata.tmp_dir}/#{bin_name}"
             )
           )

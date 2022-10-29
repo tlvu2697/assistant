@@ -37,7 +37,7 @@ module Assistant
           Assistant::Executor.instance.with_spinner(title: 'Fetching project') do
             Success(
               Assistant::Executor.instance.capture(
-                Assistant::Command.new(<<~BASH)
+                Assistant::Models::Command.new(<<~BASH)
                   git remote get-url origin
                 BASH
               ).first.gsub(/git@github.com:/, 'gh/').gsub(/.git/, '')
@@ -49,7 +49,7 @@ module Assistant
           Assistant::Executor.instance.with_spinner(title: 'Fetching branch') do
             Success(
               Assistant::Executor.instance.capture(
-                Assistant::Command.new(<<~BASH)
+                Assistant::Models::Command.new(<<~BASH)
                   git rev-parse --abbrev-ref HEAD
                 BASH
               ).first

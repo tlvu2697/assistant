@@ -10,7 +10,7 @@ module Assistant
 
         def current_version
           @current_version ||= VERSION_MATCHER.match(
-            Assistant::Executor.instance.capture(Assistant::Command.new('bat --version'))
+            Assistant::Executor.instance.capture(Assistant::Models::Command.new('bat --version'))
           )&.[](:version)
         end
       end

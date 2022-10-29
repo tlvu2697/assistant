@@ -26,7 +26,7 @@ module Assistant
           url = "#{base_url}/releases/download/v#{latest_version}/#{filename}"
 
           @metadata = Metadata.new(
-            current_version: current_version(Assistant::Command.new('lazydocker --version')),
+            current_version: current_version(Assistant::Models::Command.new('lazydocker --version')),
             latest_version: latest_version,
             tmp_dir: tmp_dir,
             filename: filename,

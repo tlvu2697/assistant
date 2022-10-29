@@ -38,7 +38,7 @@ module Assistant
 
         def extract
           Assistant::Executor.instance.capture(
-            Assistant::Command.new(
+            Assistant::Models::Command.new(
               "tar xzf #{metadata.filepath} -C #{metadata.tmp_dir} > /dev/null"
             )
           )
@@ -57,7 +57,7 @@ module Assistant
           PLAINTEXT
 
           Assistant::Executor.instance.capture(
-            Assistant::Command.new(
+            Assistant::Models::Command.new(
               <<~BASH
                 sudo rm -rf /opt/Postman
                 sudo mv #{metadata.tmp_dir}/Postman /opt/Postman
