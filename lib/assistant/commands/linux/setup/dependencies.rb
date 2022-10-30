@@ -8,6 +8,8 @@ module Assistant
           desc 'Setup Linux dependencies'
 
           def call
+            Assistant::Utils.request_sudo_permission!
+
             [
               zsh, oh_my_zsh, pure_theme, linux_dependencies,
               ruby_dependencies, python_dependencies,
