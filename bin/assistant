@@ -29,6 +29,7 @@ module Assistant
       linux.register 'tweak', Assistant::Commands::Linux::Tweak
 
       linux.register 'setup dev', Assistant::Commands::Linux::Setup::Dev
+      linux.register 'setup dependencies', Assistant::Commands::Linux::Setup::Dependencies
     end
 
     register 'eh' do |prefix|

@@ -9,20 +9,24 @@ module Assistant
 
           def call
             [
-              zsh,
-              oh_my_zsh
-            ]
+              zsh, oh_my_zsh, pure_theme, linux_dependencies,
+              ruby_dependencies, python_dependencies,
+              postgresql_dependencies, wireguard_dependencies,
+              ibus, goods
+            ].flatten.each do |command|
+              Assistant::Executor.instance.sync(command)
+            end
           end
 
           def zsh
-            Assistant::Models::Command.new(<<~BASH)
+            Assistant::Models::Commands.new(<<~BASH)
               sudo apt install -y zsh
               sudo chsh -s $(which zsh)
             BASH
           end
 
           def oh_my_zsh
-            Assistant::Models::Command.new(<<~BASH)
+            Assistant::Models::Commands.new(<<~BASH)
               sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
               git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
             BASH
@@ -35,7 +39,7 @@ module Assistant
           end
 
           def linux_dependencies
-            Assistant::Models::Command.new(<<~BASH)
+            Assistant::Models::Commands.new(<<~BASH)
               sudo apt install -y baobab bat build-essential curl exuberant-ctags fd-find font-manager fzf git gnome-tweaks imwheel mlocate ripgrep tmux xclip wget
 
               ln -s $(which fdfind) $HOME/.local/bin/fd
@@ -68,7 +72,7 @@ module Assistant
           end
 
           def ibus
-            Assistant::Models::Command.new(<<~BASH)
+            Assistant::Models::Commands.new(<<~BASH)
               sudo add-apt-repository -y ppa:bamboo-engine/ibus-bamboo
               sudo apt-get update
               sudo apt-get install ibus-bamboo
