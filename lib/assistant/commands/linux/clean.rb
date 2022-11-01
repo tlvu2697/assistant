@@ -18,7 +18,7 @@ module Assistant
         def clean_apt_packages_command
           Assistant::Models::Command.new(
             <<~BASH
-              sudo apt --purge autoremove
+              sudo apt --purge --yes autoremove
             BASH
           )
         end
