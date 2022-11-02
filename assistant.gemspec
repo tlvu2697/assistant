@@ -34,6 +34,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'dry-cli', '~> 0.6'
   spec.add_runtime_dependency 'dry-monads', '~> 1.3.5'
   spec.add_runtime_dependency 'httparty', '~> 0.20.0'
+  spec.add_runtime_dependency 'net-ping', '~> 2.0.8'
   spec.add_runtime_dependency 'pastel', '~> 0.8.0'
   spec.add_runtime_dependency 'tty-command', '~> 0.10.1'
   spec.add_runtime_dependency 'tty-config', '~> 0.5.1'

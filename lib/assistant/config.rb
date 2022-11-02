@@ -6,10 +6,8 @@ require 'json'
 module Assistant
   class Config
     include Singleton
+    include Configurable
     include Dry::Monads[:result]
-
-    CIRLCECI_TOKEN_KEY = 'circleci_token'
-    SUDO_PASSWORD_KEY = 'sudo_password'
 
     extend Forwardable
     def_delegators :storage, :fetch, :set

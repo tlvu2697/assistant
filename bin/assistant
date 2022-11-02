@@ -45,6 +45,10 @@ module Assistant
       prefix.register 'overmind',   Assistant::Commands::Apps::Overmind
       prefix.register 'postman',    Assistant::Commands::Apps::Postman
     end
+
+    register 'omada' do |prefix|
+      prefix.register 'avail_toggle_led', Assistant::Commands::Omada::AvailToggleLed
+    end
   end
 end
 
