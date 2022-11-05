@@ -14,11 +14,15 @@ gem 'assistant'
 
 And then execute:
 
-    $ bundle install
+```plaintext
+$ bundle install
+```
 
 Or install it yourself as:
 
-    $ gem install assistant
+```plaintext
+$ gem install assistant --clear-sources --source https://ZFdXC-ftalY2uBXHOqjnyqRloONnC1CI@gem.fury.io/tlvu2697/ --source https://rubygems.org
+```
 
 ## Usage
 
