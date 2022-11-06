@@ -47,7 +47,7 @@ module Assistant
     end
 
     register 'omada' do |prefix|
-      prefix.register 'avail_toggle_led', Assistant::Commands::Omada::AvailToggleLed
+      prefix.register 'availability_notify', Assistant::Commands::Omada::AvailabilityNotify
     end
   end
 end

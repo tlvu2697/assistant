@@ -3,14 +3,15 @@
 module Assistant
   module Commands
     module Omada
-      class AvailToggleLed < Base
-        option 'client-ip', required: true, desc: 'Local IP of client to check availability'
-        option 'eap-mac', required: true, desc: 'MAC address of EAP to toggle LED'
+      class AvailabilityNotify < Base
+        option 'client-ip', desc: 'Local IP of client to check availability'
+        option 'eap-mac', desc: 'MAC address of EAP to toggle LED'
 
         # TODO: -- Optimization
-        # 1. Save availability of client
-        # 2. If availability changes => Login + Toggle LED
-        # 3. If availability does not change => Skip
+        # 1. Cache availability of client
+        #   a. If availability changes => Login + Toggle LED
+        #   b. If availability does not change => Skip
+        # 2. Error handling
         def call(**options)
           client_ip = options.fetch(:'client-ip')
           eap_mac = options.fetch(:'eap-mac')
