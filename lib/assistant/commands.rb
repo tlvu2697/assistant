@@ -14,7 +14,7 @@ require_relative 'commands/circleci/approve'
 require_relative 'commands/circleci/rerun'
 
 require_relative 'commands/omada/base'
-require_relative 'commands/omada/avail_toggle_led'
+require_relative 'commands/omada/availability_notify'
 
 require_relative 'commands/eh/tick_checklist'
 

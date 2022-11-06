@@ -1,9 +1,12 @@
 # frozen_string_literal: true
 
-require 'singleton'
-require 'json'
-
 module Assistant
+  class YAMLMarshaller < TTY::Config::Marshallers::YAMLMarshaller
+    def unmarshal(content)
+      YAML.safe_load content, permitted_classes: [Symbol]
+    end
+  end
+
   class Config
     include Singleton
     include Configurable
@@ -37,19 +40,36 @@ module Assistant
       end
     end
 
-    def set!(*args, **kwargs, &block)
-      storage.set(*args, **kwargs, &block)
-      storage.write(force: true)
+    %i[set append remove].each do |method_name|
+      bang_method_name = "#{method_name}!"
+
+      define_method bang_method_name do |*args, **kwargs, &block|
+        enhance do |s|
+          s.send(method_name, *args, **kwargs, &block)
+        end
+      end
     end
 
     private
 
+    def enhance
+      return unless block_given?
+
+      mutex = Mutex.new
+      mutex.synchronize do
+        yield storage
+        storage.write(force: true)
+      end
+    end
+
     def storage
-      @storage ||= Assistant::Executor.instance.with_spinner(title: 'Loading configurations') do
+      @storage ||= begin
         storage = TTY::Config.new
         storage.filename = '.assistant'
         storage.extname = '.yaml'
         storage.append_path(Dir.home)
+        storage.unregister_marshaller(:yaml)
+        storage.register_marshaller(:assistant_yamlmarshaller, Assistant::YAMLMarshaller)
 
         begin
           storage.read
@@ -57,8 +77,8 @@ module Assistant
           storage.write(create: true, force: true)
         end
 
-        [Success(storage), 'done']
-      end.value!
+        storage
+      end
     end
   end
 end

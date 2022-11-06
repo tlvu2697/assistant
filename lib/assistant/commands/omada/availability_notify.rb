@@ -6,41 +6,59 @@ module Assistant
       class AvailabilityNotify < Base
         option 'client-ip', desc: 'Local IP of client to check availability'
         option 'eap-mac', desc: 'MAC address of EAP to toggle LED'
+        option 'username', desc: 'Omada username'
+        option 'password', desc: 'Omada password'
 
-        # TODO: -- Optimization
-        # 1. Cache availability of client
-        #   a. If availability changes => Login + Toggle LED
-        #   b. If availability does not change => Skip
-        # 2. Error handling
         def call(**options)
-          client_ip = options.fetch(:'client-ip')
-          eap_mac = options.fetch(:'eap-mac')
+          @client_ip = options.fetch(:'client-ip')
+          @eap_mac = options.fetch(:'eap-mac')
+          @username = options[:username] || prompt_fetch_username
+          @password = options[:password] || prompt_fetch_password
 
-          username
-          password
-          auth
+          eap_led_setting = yield fetch_client_availability
+          cached_eap_led_setting = fetch_cached_eap_led_setting
 
-          client_availability = yield available?(client_ip)
-          yield toggle_led(client_availability, eap_mac)
+          if cached_eap_led_setting.nil? || cached_eap_led_setting != eap_led_setting
+            cache_eap_led_setting(eap_led_setting)
+            yield update_eap_led_setting(eap_led_setting)
+          end
 
           Success()
         end
 
-        def available?(client_ip)
+        private
+
+        def fetch_client_availability
           Assistant::Executor.instance.with_spinner(
-            title: "Checking availability of \"#{Assistant::PASTEL.green(client_ip)}\""
+            title: "Checking availability of \"#{Assistant::PASTEL.green(@client_ip)}\""
           ) do
-            Success(Net::Ping::External.new(client_ip).ping?)
+            Success(Net::Ping::External.new(@client_ip).ping?)
           end
         end
 
-        def toggle_led(client_availability, eap_mac)
+        def fetch_cached_eap_led_setting
+          Assistant::Config.instance.fetch(
+            "#{Assistant::Config::OMADA[:AVAILABILITIES]}.#{@eap_mac}"
+          )
+        end
+
+        def cache_eap_led_setting(led_setting)
+          Assistant::Config.instance.set!(
+            "#{Assistant::Config::OMADA[:AVAILABILITIES]}.#{@eap_mac}",
+            value: led_setting
+          )
+        end
+
+        def update_eap_led_setting(led_setting)
+          auth
+          action = led_setting ? 'Turn on' : 'Turn off'
+
           Assistant::Executor.instance.with_spinner(
-            title: "Toggling LED of EAP \"#{Assistant::PASTEL.green(eap_mac)}\""
+            title: "#{action} LED of EAP \"#{Assistant::PASTEL.green(@eap_mac)}\""
           ) do
             eap_repository.toggle_led(
-              eap_mac: eap_mac,
-              state: Assistant::Omada::EAP::LED_SETTINGS[client_availability]
+              eap_mac: @eap_mac,
+              state: Assistant::Omada::EAP::LED_SETTINGS[led_setting]
             )
           end
         end

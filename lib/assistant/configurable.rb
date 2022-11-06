@@ -6,7 +6,8 @@ module Assistant
     SUDO_PASSWORD_KEY = 'sudo_password'
     OMADA = {
       USERNAME: 'omada.username',
-      PASSWORD: 'omada.password'
+      PASSWORD: 'omada.password',
+      AVAILABILITIES: 'omada.availabilities'
     }.freeze
   end
 end

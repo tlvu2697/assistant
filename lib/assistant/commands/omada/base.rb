@@ -8,14 +8,16 @@ module Assistant
 
         private
 
-        def username
-          @username ||= Assistant::Config.instance.prompt_fetch(
+        attr_reader :username, :password
+
+        def prompt_fetch_username
+          @username = Assistant::Config.instance.prompt_fetch(
             Assistant::Config::OMADA[:USERNAME]
           )
         end
 
-        def password
-          @password ||= Assistant::Config.instance.prompt_fetch(
+        def prompt_fetch_password
+          @password = Assistant::Config.instance.prompt_fetch(
             Assistant::Config::OMADA[:PASSWORD]
           )
         end
