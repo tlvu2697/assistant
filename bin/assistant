@@ -47,7 +47,8 @@ module Assistant
     end
 
     register 'omada' do |prefix|
-      prefix.register 'availability_notify', Assistant::Commands::Omada::AvailabilityNotify
+      prefix.register 'availability notify', Assistant::Commands::Omada::AvailabilityNotify
+      prefix.register 'certification convert', Assistant::Commands::Omada::CertificationConvert
     end
   end
 end

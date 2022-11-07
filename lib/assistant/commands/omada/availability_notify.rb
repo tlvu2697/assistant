@@ -18,12 +18,10 @@ module Assistant
           eap_led_setting = yield fetch_client_availability
           cached_eap_led_setting = fetch_cached_eap_led_setting
 
-          if cached_eap_led_setting.nil? || cached_eap_led_setting != eap_led_setting
-            cache_eap_led_setting(eap_led_setting)
-            yield update_eap_led_setting(eap_led_setting)
-          end
+          return unless cached_eap_led_setting.nil? || cached_eap_led_setting != eap_led_setting
 
-          Success()
+          cache_eap_led_setting(eap_led_setting)
+          yield update_eap_led_setting(eap_led_setting)
         end
 
         private

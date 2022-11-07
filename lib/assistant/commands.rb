@@ -15,6 +15,7 @@ require_relative 'commands/circleci/rerun'
 
 require_relative 'commands/omada/base'
 require_relative 'commands/omada/availability_notify'
+require_relative 'commands/omada/certification_convert'
 
 require_relative 'commands/eh/tick_checklist'
 
