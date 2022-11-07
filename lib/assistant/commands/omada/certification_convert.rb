@@ -4,10 +4,10 @@ module Assistant
   module Commands
     module Omada
       class CertificationConvert < Base
-        option 'ca-bundle', desc: 'Intermediate certificate (ca-bundle.crt)'
-        option 'certificate', desc: 'Primary SSL certificate (certificate.crt)'
-        option 'private-key', desc: 'Private key (private.key)'
-        option 'out', desc: 'SSL certificate in PKCS12 format (.pfx)'
+        option :'ca-bundle',   default: 'ca_bundle.crt',   desc: 'Intermediate certificate (ca-bundle.crt)'
+        option :certificate,   default: 'certificate.crt', desc: 'Primary SSL certificate (certificate.crt)'
+        option :'private-key', default: 'private.key',     desc: 'Private key (private.key)'
+        option :out,           default: 'certificate.pfx', desc: 'SSL certificate in PKCS12 format (.pfx)'
 
         def call(**options)
           @ca_bundle_path = options.fetch(:'ca-bundle')
@@ -17,8 +17,8 @@ module Assistant
           @compined_certificate_path = 'compined-certificate.crt'
 
           compine_certificates(
-            certificate_path,
-            ca_bundle_path
+            @certificate_path,
+            @ca_bundle_path
           )
 
           Assistant::Executor.instance.sync(
@@ -29,17 +29,19 @@ module Assistant
             )
           )
 
+          TTY::File.remove_file(@compined_certificate_path)
+
           Success('done')
         end
 
         private
 
         def compine_certificates(*certificate_paths)
-          TTY::File.create_file(@compined_certificate_path, '', force: true, verbose: false)
+          TTY::File.create_file(@compined_certificate_path, '')
 
           certificate_paths.each do |certificate_path|
-            TTY::File.append_to_file(@compined_certificate_path, force: true, verbose: false) do
-              TTY::File.read_to_char(certificate_path)
+            TTY::File.append_to_file(@compined_certificate_path) do
+              TTY::File.read_to_char(certificate_path, verbose: false)
             end
           end
         end

@@ -4,10 +4,10 @@ module Assistant
   module Commands
     module Omada
       class AvailabilityNotify < Base
-        option 'client-ip', desc: 'Local IP of client to check availability'
-        option 'eap-mac', desc: 'MAC address of EAP to toggle LED'
-        option 'username', desc: 'Omada username'
-        option 'password', desc: 'Omada password'
+        option :'client-ip', desc: 'Local IP of client to check availability'
+        option :'eap-mac',   desc: 'MAC address of EAP to toggle LED'
+        option :username,    desc: 'Omada username'
+        option :password,    desc: 'Omada password'
 
         def call(**options)
           @client_ip = options.fetch(:'client-ip')

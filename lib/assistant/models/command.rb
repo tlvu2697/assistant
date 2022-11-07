@@ -3,12 +3,10 @@
 module Assistant
   module Models
     class Command < Base
+      attr_reader :content
+
       def initialize(content)
         @content = content&.strip
-      end
-
-      def content
-        'echo 1'
       end
     end
   end
