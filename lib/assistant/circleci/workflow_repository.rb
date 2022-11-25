@@ -52,7 +52,6 @@ module Assistant
       def get_failing_by_pipeline(pipeline_id:, query: {})
         workflows = yield get_by_pipeline(pipeline_id: pipeline_id, query: query)
 
-
         workflows = workflows.status_failing
         workflows.count.positive? ? Success(workflows) : on_fail
       end
@@ -63,7 +62,6 @@ module Assistant
           body: {
             enable_ssh: false,
             from_failed: true,
-            jobs: [],
             sparse_tree: false
           }.to_json
         )

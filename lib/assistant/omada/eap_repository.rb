@@ -22,8 +22,7 @@ module Assistant
       def toggle_led(eap_mac:, state:, site: DEFAULT_SITE)
         response = self.class.patch(
           "/sites/#{site}/eaps/#{eap_mac}",
-          body: { ledSetting: state }.to_json,
-          verify: false
+          body: { ledSetting: state }.to_json
         )
 
         json_response = JSON.parse(response.body)

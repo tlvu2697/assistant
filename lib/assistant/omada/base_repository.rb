@@ -32,7 +32,7 @@ module Assistant
       end
 
       def login(username:, password:)
-        response = self.class.post('/login', body: { username: username, password: password }.to_json, verify: false)
+        response = self.class.post('/login', body: { username: username, password: password }.to_json)
 
         if response.success?
           auth = Auth.new(
