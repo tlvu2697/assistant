@@ -92,7 +92,7 @@ module Assistant
         when Symbol
           fetch!(SYMBOL_TO_STATUS_MESSAGE, status)
         when Integer
-          fetch!(HTTP_STATUS_CODES, status)
+          fetch!(STATUS_CODES, status)
         end
       end
 

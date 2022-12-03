@@ -26,6 +26,12 @@ module Assistant
           @base_repository ||= Assistant::Omada::BaseRepository.new
         end
 
+        def client_repository
+          @client_repository ||= Assistant::Omada::ClientRepository.new(
+            auth: auth
+          )
+        end
+
         def eap_repository
           @eap_repository ||= Assistant::Omada::EAPRepository.new(
             auth: auth
