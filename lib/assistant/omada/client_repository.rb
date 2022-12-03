@@ -24,7 +24,7 @@ module Assistant
         status = json_response['errorCode']
         result = json_response['result']
 
-        status.zero? ? Client.new(result) : Failure(message)
+        status.zero? ? Success(Client.new(result)) : Failure(message)
       end
     end
   end
