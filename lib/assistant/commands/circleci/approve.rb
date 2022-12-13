@@ -86,6 +86,7 @@ module Assistant
             'Select job to approve',
             indexed_jobs,
             show_help: :always,
+            per_page: 10,
             cycle: true,
             min: 1
           )
