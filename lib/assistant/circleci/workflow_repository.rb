@@ -56,6 +56,12 @@ module Assistant
         workflows.count.positive? ? Success(workflows) : on_fail
       end
 
+      def cancel(workflow_id:)
+        response = self.class.post("/workflow/#{workflow_id}/cancel")
+
+        response.success? ? Success(response.message) : Failure(response.message)
+      end
+
       def rerun(workflow_id:)
         response = self.class.post(
           "/workflow/#{workflow_id}/rerun",

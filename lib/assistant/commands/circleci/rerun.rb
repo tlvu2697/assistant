@@ -16,6 +16,7 @@ module Assistant
           workflows = yield fetch_failing_workflows(pipeline_id: pipeline.id)
 
           prompt_select_workflows(workflows).each do |selected_workflow|
+            cancel_workflow(selected_workflow)
             rerun_workflow(selected_workflow)
           end
 
@@ -62,6 +63,14 @@ module Assistant
             cycle: true,
             min: 1
           )
+        end
+
+        def cancel_workflow(workflow)
+          Assistant::Executor.instance.with_spinner(
+            title: "Canceling workflow \"#{Assistant::PASTEL.green(workflow.name)}\""
+          ) do
+            workflow_repository.cancel(workflow_id: workflow.id)
+          end
         end
 
         def rerun_workflow(workflow)
