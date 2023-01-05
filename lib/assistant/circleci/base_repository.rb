@@ -5,6 +5,7 @@ module Assistant
     class BaseRepository
       include HTTParty
       base_uri 'circleci.com/api/v2'
+      headers 'Content-Type' => 'application/json'
 
       def initialize(circleci_token:)
         self.class.headers 'Circle-Token' => circleci_token

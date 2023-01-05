@@ -3,7 +3,7 @@
 module Assistant
   module CircleCI
     class Workflow
-      attr_reader :id, :pipeline_id, :name, :status, :created_at
+      attr_reader :id, :pipeline_id, :name, :status, :created_at, :tag
 
       def initialize(data)
         @id = data['id']
@@ -11,6 +11,7 @@ module Assistant
         @name = data['name']
         @status = data['status']
         @created_at = data['created_at']
+        @tag = "#{name}##{id.split("-").first}"
       end
     end
 
@@ -32,7 +33,9 @@ module Assistant
       end
 
       def status_failing
-        self.class.new(@workflows.filter { |w| w.status == 'failing' || w.status == 'failed' })
+        self.class.new(
+          @workflows.filter { |w| w.status == 'failing' || w.status == 'failed' || w.status == 'canceled' }
+        )
       end
     end
 
@@ -66,9 +69,7 @@ module Assistant
         response = self.class.post(
           "/workflow/#{workflow_id}/rerun",
           body: {
-            enable_ssh: false,
-            from_failed: true,
-            sparse_tree: false
+            from_failed: true
           }.to_json
         )
 

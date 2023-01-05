@@ -3,7 +3,7 @@
 module Assistant
   module CircleCI
     class Job
-      attr_reader :id, :approval_request_id, :workflow_id, :name, :type, :status
+      attr_reader :id, :approval_request_id, :workflow_id, :name, :type, :status, :tag
 
       def initialize(data)
         @id = data['id']
@@ -12,6 +12,7 @@ module Assistant
         @name = data['name']
         @type = data['type']
         @status = data['status']
+        @tag = "#{name}##{id.split("-").first}"
       end
     end
 
