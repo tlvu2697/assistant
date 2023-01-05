@@ -7,10 +7,10 @@ module Assistant
         desc 'Clean residual configs'
 
         def call(**)
-          Assistant::Executor.sync(stop_container)
-          Assistant::Executor.sync(remove_container)
-          Assistant::Executor.sync(remove_image)
-          Assistant::Executor.sync(start_container)
+          Assistant::Executor.instance.sync(stop_container)
+          Assistant::Executor.instance.sync(remove_container)
+          Assistant::Executor.instance.sync(remove_image)
+          Assistant::Executor.instance.sync(start_container)
         end
 
         private
