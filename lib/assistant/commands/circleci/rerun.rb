@@ -55,7 +55,7 @@ module Assistant
         end
 
         def prompt_select_workflows(workflows)
-          indexed_workflows = workflows.each_with_object({}) { |workflow, hash| hash[workflow.name] = workflow }
+          indexed_workflows = workflows.reverse.each_with_object({}) { |workflow, hash| hash[workflow.name] = workflow }
           Assistant::PROMPT.multi_select(
             'Select workflow to rerun',
             indexed_workflows,
@@ -75,7 +75,7 @@ module Assistant
 
         def rerun_workflow(workflow)
           Assistant::Executor.instance.with_spinner(
-            title: "Re-running workflow \"#{Assistant::PASTEL.green(workflow.name)}\""
+            title: "Re-running workflow \"#{Assistant::PASTEL.green(workflow.tag)}\""
           ) do
             workflow_repository.rerun(workflow_id: workflow.id)
           end

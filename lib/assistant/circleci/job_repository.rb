@@ -44,6 +44,10 @@ module Assistant
         @jobs.flatten!
       end
 
+      def reverse
+        @jobs.reverse
+      end
+
       def type_approval
         self.class.new(@jobs.filter { |job| job.type == 'approval' })
       end

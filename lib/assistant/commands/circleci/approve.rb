@@ -81,7 +81,7 @@ module Assistant
         end
 
         def prompt_select_jobs(jobs)
-          indexed_jobs = jobs.each_with_object({}) { |job, hash| hash[job.name] = job }
+          indexed_jobs = jobs.reverse.each_with_object({}) { |job, hash| hash[job.name] = job }
           Assistant::PROMPT.multi_select(
             'Select job to approve',
             indexed_jobs,

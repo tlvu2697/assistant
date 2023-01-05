@@ -32,6 +32,10 @@ module Assistant
         end
       end
 
+      def reverse
+        @workflows.reverse
+      end
+
       def status_failing
         self.class.new(
           @workflows.filter { |w| w.status == 'failing' || w.status == 'failed' || w.status == 'canceled' }
